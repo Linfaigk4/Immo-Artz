@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 
 // Types pour Google Maps
 interface GoogleMapProps {
@@ -21,8 +21,8 @@ interface GoogleMapProps {
 
 declare global {
   interface Window {
-    google: any
-    initGoogleMap: () => void
+    google?: any
+    initGoogleMap?: () => void
   }
 }
 
@@ -155,7 +155,7 @@ export function PropertiesGoogleMap({
           lat: validProperties.reduce((sum, p) => sum + (p.latitude || 0), 0) / validProperties.length,
           lng: validProperties.reduce((sum, p) => sum + (p.longitude || 0), 0) / validProperties.length,
         }
-      : { lat: 3.848, lng: 11.502 }) // Douala par défaut
+      : { lat: 3.848, lng: 11.502 }) // Yaoundé par défaut
 
   useEffect(() => {
     if (window.google?.maps) {
@@ -164,7 +164,7 @@ export function PropertiesGoogleMap({
     }
 
     const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initPropsMap&libraries=marker`
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initGoogleMap&libraries=marker`
     script.async = true
     script.defer = true
 
@@ -268,6 +268,3 @@ export function useGoogleMaps(apiKey: string) {
 
   return isLoaded
 }
-
-// Import manquant
-import { useState } from 'react'

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { MapPin, Bed, Bath, Square, Heart } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { formatPrice } from '@/utils/format'
 import type { Property } from '@/types'
 
 interface PropertyCardProps {

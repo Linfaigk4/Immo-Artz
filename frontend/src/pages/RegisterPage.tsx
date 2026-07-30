@@ -4,6 +4,7 @@ import { Eye, EyeOff, Mail, Lock, User, Phone, Building2, ArrowLeft } from 'luci
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAuth } from '@/hooks/useAuth'
+import type { RegisterData } from '@/types'
 
 export function RegisterPage() {
   const navigate = useNavigate()
@@ -12,7 +13,7 @@ export function RegisterPage() {
   
   const isAgent = (location.state as any)?.role === 'agent'
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterData>({
     first_name: '',
     last_name: '',
     email: '',

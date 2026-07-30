@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '@/services/api'
-import type { Property, PropertyFilters, PaginatedResponse, ApiResponse } from '@/types'
+import type { Property, PropertyFilters, ApiResponse } from '@/types'
 
 export function useProperties(initialFilters?: PropertyFilters) {
   const [properties, setProperties] = useState<Property[]>([])

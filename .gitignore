@@ -35,6 +35,8 @@ backend/node_modules/
 backend/.env
 backend/storage/*.php
 backend/storage/framework/
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
 
 # Ignorer les dépendances dans le dossier frontend
 frontend/node_modules/

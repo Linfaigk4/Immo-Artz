@@ -5,7 +5,6 @@ import {
   Bath, 
   Square, 
   Car, 
-  Calendar, 
   Share2, 
   Heart,
   Phone,
@@ -17,14 +16,13 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Map } from '@/components/Map'
 import { useProperty } from '@/hooks/useProperties'
-import { formatPrice, formatDate } from '@/utils/format'
+import { formatDate } from '@/utils/format'
 import { useState } from 'react'
 
 export function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { property, isLoading, error } = useProperty(id)
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   if (isLoading) {
@@ -278,7 +276,12 @@ export function PropertyDetailPage() {
 
                 <Button
                   className="w-full mt-4"
-                  onClick={() => setIsContactModalOpen(true)}
+                  disabled={!property.agent.email}
+                  onClick={() => {
+                    if (property.agent?.email) {
+                      window.location.href = `mailto:${property.agent.email}`
+                    }
+                  }}
                 >
                   Envoyer un message
                 </Button>

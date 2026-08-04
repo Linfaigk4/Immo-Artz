@@ -234,6 +234,39 @@ class CatalogController extends Controller
     }
 
     /**
+     * Obtenir le statut du catalogue (Admin)
+     */
+    public function status(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        
+        if (!$user->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Non autorisé.',
+            ], 403);
+        }
+
+        $currentPassword = CatalogPassword::getCurrentValid();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'has_active_password' => $currentPassword !== null,
+                'password' => $currentPassword ? [
+                    'id' => $currentPassword->id,
+                    'valid_from' => $currentPassword->valid_from->toIso8601String(),
+                    'valid_until' => $currentPassword->valid_until->toIso8601String(),
+                    'time_remaining' => $currentPassword->time_remaining,
+                    'uses_remaining' => $currentPassword->uses_remaining,
+                    'current_uses' => $currentPassword->current_uses,
+                    'max_uses' => $currentPassword->max_uses,
+                ] : null,
+            ],
+        ]);
+    }
+
+    /**
      * Forcer la rotation du mot de passe (Admin)
      */
     public function rotate(Request $request): JsonResponse

@@ -215,3 +215,106 @@ class AdminController extends Controller
         ]);
     }
 }
+
+    /**
+     * Liste tous les utilisateurs (Admin)
+     */
+    public function users(Request $request): JsonResponse
+    {
+        $query = \App\Models\User::query();
+
+        // Filtres
+        if ($request->has('role')) {
+            $query->where('role', $request->role);
+        }
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->orderByDesc('created_at')
+            ->paginate($request->input('per_page', 20));
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'users' => $users->map(fn($u) => [
+                    'id' => $u->id,
+                    'full_name' => $u->full_name,
+                    'email' => $u->email,
+                    'phone' => $u->phone,
+                    'role' => $u->role,
+                    'status' => $u->status,
+                    'agency_name' => $u->agency_name,
+                    'license_number' => $u->license_number,
+                    'rating_average' => $u->rating_average,
+                    'rating_count' => $u->rating_count,
+                    'created_at' => $u->created_at->toIso8601String(),
+                ]),
+                'pagination' => [
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'per_page' => $users->perPage(),
+                    'total' => $users->total(),
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Activer un utilisateur
+     */
+    public function activateUser(int $id): JsonResponse
+    {
+        $user = \App\Models\User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Utilisateur non trouvé.',
+            ], 404);
+        }
+
+        $user->update(['status' => 'active']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Utilisateur activé avec succès.',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'status' => $user->status,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Désactiver un utilisateur
+     */
+    public function deactivateUser(int $id): JsonResponse
+    {
+        $user = \App\Models\User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Utilisateur non trouvé.',
+            ], 404);
+        }
+
+        $user->update(['status' => 'inactive']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Utilisateur désactivé avec succès.',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->full_name,
+                    'status' => $user->status,
+                ],
+            ],
+        ]);
+    }
+}

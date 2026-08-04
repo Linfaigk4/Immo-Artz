@@ -105,11 +105,16 @@ export function Footer() {
                   Douala, Cameroun
                 </span>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-immo-500 flex-shrink-0" />
-                <a href="tel:+237600000000" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  +237 6XX XXX XXX
-                </a>
+                <div className="flex flex-col gap-1">
+                  <a href="tel:+237676416878" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    +237 676 416 878
+                  </a>
+                  <a href="tel:+237691929077" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    +237 691 929 077
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-immo-500 flex-shrink-0" />

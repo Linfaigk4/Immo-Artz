@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Validator;
 class ContactRequestController extends Controller
 {
     /**
-     * Soumettre une demande de contact pour un bien (route publique).
+     * Soumettre une demande de contact pour un bien (logique partagée).
      */
-    public function store(Request $request, int $propertyId): JsonResponse
+    private function submitContactRequest(Request $request, int $propertyId): JsonResponse
     {
         $property = Property::with('agent')->find($propertyId);
 
@@ -110,6 +110,14 @@ class ContactRequestController extends Controller
                 ],
             ],
         ], 201);
+    }
+
+    /**
+     * Soumettre une demande de contact pour un bien (route paramétrée).
+     */
+    public function store(Request $request, int $propertyId): JsonResponse
+    {
+        return $this->submitContactRequest($request, $propertyId);
     }
 
     /**
@@ -218,5 +226,22 @@ class ContactRequestController extends Controller
     private function canManage($user, ContactRequest $contact): bool
     {
         return $user->isAdmin() || $contact->agent_id === $user->id;
+    }
+
+    /**
+     * Soumettre une demande de contact depuis le body (POST /api/v1/contact-requests avec property_id).
+     */
+    public function storeFromBody(Request $request): JsonResponse
+    {
+        $propertyId = $request->input('property_id');
+        
+        if (!$propertyId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'property_id requis.',
+            ], 422);
+        }
+
+        return $this->submitContactRequest($request, (int) $propertyId);
     }
 }

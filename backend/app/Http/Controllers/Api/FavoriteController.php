@@ -52,8 +52,9 @@ class FavoriteController extends Controller
 
     /**
      * Ajouter un bien aux favoris (idempotent).
+     * Accepte property_id soit en URL ({id}), soit en paramètre.
      */
-    public function store(Request $request, int $propertyId): JsonResponse
+    private function addFavorite(Request $request, int $propertyId): JsonResponse
     {
         $user = $request->user();
 
@@ -83,6 +84,14 @@ class FavoriteController extends Controller
                 ],
             ],
         ], $favorite->wasRecentlyCreated ? 201 : 200);
+    }
+
+    /**
+     * Ajouter un bien aux favoris via route paramétrée (POST /favorites/{propertyId}).
+     */
+    public function store(Request $request, int $propertyId): JsonResponse
+    {
+        return $this->addFavorite($request, $propertyId);
     }
 
     /**
@@ -163,5 +172,22 @@ class FavoriteController extends Controller
                 'rating' => $p->agent->rating_average,
             ] : null,
         ];
+    }
+
+    /**
+     * Ajouter un bien aux favoris depuis le body (POST /api/v1/favorites avec property_id).
+     */
+    public function storeFromBody(Request $request): JsonResponse
+    {
+        $propertyId = $request->input('property_id');
+        
+        if (!$propertyId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'property_id requis.',
+            ], 422);
+        }
+
+        return $this->addFavorite($request, (int) $propertyId);
     }
 }

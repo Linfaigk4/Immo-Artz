@@ -93,6 +93,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Favoris
     Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites', [FavoriteController::class, 'storeFromBody']); // POST /favorites with property_id in body
     Route::get('/favorites/ids', [FavoriteController::class, 'ids']);
     Route::get('/favorites/{propertyId}/check', [FavoriteController::class, 'check'])->whereNumber('propertyId');
     Route::post('/favorites/{propertyId}', [FavoriteController::class, 'store'])->whereNumber('propertyId');
@@ -100,6 +101,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Demandes de contact (agent : ses messages, admin : tous)
     Route::get('/contact-requests', [ContactRequestController::class, 'index']);
+    Route::post('/contact-requests', [ContactRequestController::class, 'storeFromBody']); // POST /contact-requests with property_id in body
     Route::post('/contact-requests/{id}/read', [ContactRequestController::class, 'markRead'])->whereNumber('id');
     Route::post('/contact-requests/{id}/replied', [ContactRequestController::class, 'markReplied'])->whereNumber('id');
     Route::delete('/contact-requests/{id}', [ContactRequestController::class, 'destroy'])->whereNumber('id');
@@ -119,6 +121,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Gestion du catalogue
         Route::get('/catalog/password', [CatalogController::class, 'currentPassword']);
+        Route::get('/catalog/status', [CatalogController::class, 'status']); // Status endpoint
         Route::post('/catalog/rotate', [CatalogController::class, 'rotate']);
         Route::get('/catalog/history', [CatalogController::class, 'history']);
 
@@ -128,6 +131,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/admin/properties/{id}/featured', [AdminController::class, 'toggleFeatured'])->whereNumber('id');
         Route::post('/admin/properties/featured/order', [AdminController::class, 'setFeaturedOrder']);
         Route::get('/admin/dashboard', [AdminController::class, 'dashboardStats']);
+        
+        // Gestion des utilisateurs
+        Route::get('/admin/users', [AdminController::class, 'users']);
+        Route::post('/admin/users/{id}/activate', [AdminController::class, 'activateUser'])->whereNumber('id');
+        Route::post('/admin/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->whereNumber('id');
     });
 });
 
